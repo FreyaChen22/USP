@@ -1,0 +1,1869 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}/Users/chenzhifei/Documents/Grad23Summer/USP/Logfiles/8.18.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}18 Sep 2023, 22:36:47
+
+{com}. do "/var/folders/gx/jp0rnft52zv25b1wf1v56tcc0000gn/T//SD26287.000000"
+{txt}
+{com}. /* ========================================================================
+>  * Program: Chinese Patent Medicine Preliminary Analysis.do
+>  * Data:        USP 2152
+>  * Aim:     处方情况分析
+>  * output:  July_week5_2152.dta in working data
+>  * Revised: 7/14/2021
+>  * ======================================================================= */
+. 
+. clear
+{txt}
+{com}. clear matrix
+{txt}
+{com}. set more off, perm
+{txt}({cmd:set more} preference recorded)
+
+{com}. 
+. 
+. global root = "/Users/chenzhifei/Documents/Grad23Summer/USP"
+{txt}
+{com}. global dofiles = "$root/Dofiles"
+{txt}
+{com}. global logfiles = "$root/Logfiles"
+{txt}
+{com}. global raw_data = "$root/Raw_data"
+{txt}
+{com}. global working_data = "$root/Working_data"
+{txt}
+{com}. global temp_data = "$root/Temp_data"
+{txt}
+{com}. global tables = "$root/Tables"
+{txt}
+{com}. global figures = "$root/Figures"
+{txt}
+{com}. 
+. 
+. **************************** 1 处方情况汇总 ****************************
+. 
+. **************************** 1.1 访问2153应答分布情况 ****************************
+. import excel "$raw_data/全库stata-yh0818.xlsx", sheet("Sheet1") cellrange(A1:AM2201) firstrow
+{res}{text}(39 vars, 2,200 obs)
+
+{com}. 
+. rename RecordID record_id
+{res}{txt}
+{com}. 
+. order record_id province case institution_type management_type drug visit_CPM visit_Combination diagnosis
+{txt}
+{com}. 
+. destring institution_type, replace
+{txt}institution_type: all characters numeric; {res}replaced {txt}as {res}byte
+{txt}(47 missing values generated)
+{res}{txt}
+{com}. 
+. save "$working_data/2200_8.18.dta", replace
+{txt}{p 0 4 2}
+file {bf}
+/Users/chenzhifei/Documents/Grad23Summer/USP/Working_data/2200_8.18.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. eststo taba1 : estpost tabulate province
+
+{txt}{space 0}{space 0}{ralign 12:province}{space 1}{c |}{space 1}{ralign 9:e(b)}{space 1}{space 1}{ralign 9:e(pct)}{space 1}{space 1}{ralign 9:e(cumpct)}{space 1}
+{space 0}{hline 13}{c   +}{hline 11}{hline 11}{hline 11}
+{space 0}{space 0}{ralign 12:gansu}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      128}}}{space 1}{space 1}{ralign 9:{res:{sf: 5.945193}}}{space 1}{space 1}{ralign 9:{res:{sf: 5.945193}}}{space 1}
+{space 0}{space 0}{ralign 12:guangdong}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      503}}}{space 1}{space 1}{ralign 9:{res:{sf: 23.36275}}}{space 1}{space 1}{ralign 9:{res:{sf: 29.30794}}}{space 1}
+{space 0}{space 0}{ralign 12:guizhou}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      188}}}{space 1}{space 1}{ralign 9:{res:{sf: 8.732002}}}{space 1}{space 1}{ralign 9:{res:{sf: 38.03994}}}{space 1}
+{space 0}{space 0}{ralign 12:hunan}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      387}}}{space 1}{space 1}{ralign 9:{res:{sf: 17.97492}}}{space 1}{space 1}{ralign 9:{res:{sf: 56.01486}}}{space 1}
+{space 0}{space 0}{ralign 12:neimeng}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      127}}}{space 1}{space 1}{ralign 9:{res:{sf: 5.898746}}}{space 1}{space 1}{ralign 9:{res:{sf: 61.91361}}}{space 1}
+{space 0}{space 0}{ralign 12:shanxi}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      259}}}{space 1}{space 1}{ralign 9:{res:{sf: 12.02973}}}{space 1}{space 1}{ralign 9:{res:{sf: 73.94333}}}{space 1}
+{space 0}{space 0}{ralign 12:sichuan}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      561}}}{space 1}{space 1}{ralign 9:{res:{sf: 26.05667}}}{space 1}{space 1}{ralign 9:{res:{sf:      100}}}{space 1}
+{space 0}{hline 13}{c   +}{hline 11}{hline 11}{hline 11}
+{space 0}{space 0}{ralign 12:Total}{space 1}{c |}{space 1}{ralign 9:{res:{sf:     2153}}}{space 1}{space 1}{ralign 9:{res:{sf:      100}}}{space 1}{space 1}{ralign 9:{res:{sf:{space 9}}}}{space 1}
+
+{com}.         
+. eststo taba2 : estpost tabulate case
+
+{txt}{space 0}{space 0}{ralign 12:case}{space 1}{c |}{space 1}{ralign 9:e(b)}{space 1}{space 1}{ralign 9:e(pct)}{space 1}{space 1}{ralign 9:e(cumpct)}{space 1}
+{space 0}{hline 13}{c   +}{hline 11}{hline 11}{hline 11}
+{space 0}{space 0}{ralign 12:1}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      197}}}{space 1}{space 1}{ralign 9:{res:{sf: 9.150023}}}{space 1}{space 1}{ralign 9:{res:{sf: 9.150023}}}{space 1}
+{space 0}{space 0}{ralign 12:2}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      198}}}{space 1}{space 1}{ralign 9:{res:{sf:  9.19647}}}{space 1}{space 1}{ralign 9:{res:{sf: 18.34649}}}{space 1}
+{space 0}{space 0}{ralign 12:3}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      197}}}{space 1}{space 1}{ralign 9:{res:{sf: 9.150023}}}{space 1}{space 1}{ralign 9:{res:{sf: 27.49652}}}{space 1}
+{space 0}{space 0}{ralign 12:4}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      192}}}{space 1}{space 1}{ralign 9:{res:{sf: 8.917789}}}{space 1}{space 1}{ralign 9:{res:{sf: 36.41431}}}{space 1}
+{space 0}{space 0}{ralign 12:6}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      187}}}{space 1}{space 1}{ralign 9:{res:{sf: 8.685555}}}{space 1}{space 1}{ralign 9:{res:{sf: 45.09986}}}{space 1}
+{space 0}{space 0}{ralign 12:7}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      195}}}{space 1}{space 1}{ralign 9:{res:{sf:  9.05713}}}{space 1}{space 1}{ralign 9:{res:{sf: 54.15699}}}{space 1}
+{space 0}{space 0}{ralign 12:8}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      198}}}{space 1}{space 1}{ralign 9:{res:{sf:  9.19647}}}{space 1}{space 1}{ralign 9:{res:{sf: 63.35346}}}{space 1}
+{space 0}{space 0}{ralign 12:9}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      197}}}{space 1}{space 1}{ralign 9:{res:{sf: 9.150023}}}{space 1}{space 1}{ralign 9:{res:{sf: 72.50348}}}{space 1}
+{space 0}{space 0}{ralign 12:10}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      194}}}{space 1}{space 1}{ralign 9:{res:{sf: 9.010683}}}{space 1}{space 1}{ralign 9:{res:{sf: 81.51417}}}{space 1}
+{space 0}{space 0}{ralign 12:11}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      200}}}{space 1}{space 1}{ralign 9:{res:{sf: 9.289364}}}{space 1}{space 1}{ralign 9:{res:{sf: 90.80353}}}{space 1}
+{space 0}{space 0}{ralign 12:12}{space 1}{c |}{space 1}{ralign 9:{res:{sf:      198}}}{space 1}{space 1}{ralign 9:{res:{sf:  9.19647}}}{space 1}{space 1}{ralign 9:{res:{sf:      100}}}{space 1}
+{space 0}{hline 13}{c   +}{hline 11}{hline 11}{hline 11}
+{space 0}{space 0}{ralign 12:Total}{space 1}{c |}{space 1}{ralign 9:{res:{sf:     2153}}}{space 1}{space 1}{ralign 9:{res:{sf:      100}}}{space 1}{space 1}{ralign 9:{res:{sf:{space 9}}}}{space 1}
+
+{com}. 
+. 
+. tab  province diagnosis
+
+           {txt}{c |}            diagnosis
+  province {c |}         1          2          3 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+     gansu {c |}{res}        23         38         14 {txt}{c |}{res}       128 
+{txt} guangdong {c |}{res}       122        137         45 {txt}{c |}{res}       503 
+{txt}   guizhou {c |}{res}        36         56         11 {txt}{c |}{res}       188 
+{txt}     hunan {c |}{res}        89        119         42 {txt}{c |}{res}       387 
+{txt}   neimeng {c |}{res}        28         46          6 {txt}{c |}{res}       127 
+{txt}    shanxi {c |}{res}        57         67         25 {txt}{c |}{res}       259 
+{txt}   sichuan {c |}{res}       128        120         49 {txt}{c |}{res}       561 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       483        583        192 {txt}{c |}{res}     2,153 
+
+
+           {txt}{c |}            diagnosis
+  province {c |}         4          5          9 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+     gansu {c |}{res}        29         19          5 {txt}{c |}{res}       128 
+{txt} guangdong {c |}{res}        74        116          9 {txt}{c |}{res}       503 
+{txt}   guizhou {c |}{res}        52         32          1 {txt}{c |}{res}       188 
+{txt}     hunan {c |}{res}        93         42          2 {txt}{c |}{res}       387 
+{txt}   neimeng {c |}{res}        26         18          3 {txt}{c |}{res}       127 
+{txt}    shanxi {c |}{res}        63         41          6 {txt}{c |}{res}       259 
+{txt}   sichuan {c |}{res}       128        129          7 {txt}{c |}{res}       561 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       465        397         33 {txt}{c |}{res}     2,153 
+{txt}
+{com}. 
+. tab case diagnosis
+
+           {txt}{c |}            diagnosis
+      case {c |}         1          2          3 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+         1 {c |}{res}        26         29         20 {txt}{c |}{res}       197 
+{txt}         2 {c |}{res}        67         30         45 {txt}{c |}{res}       198 
+{txt}         3 {c |}{res}        39         26         18 {txt}{c |}{res}       197 
+{txt}         4 {c |}{res}        51         82         28 {txt}{c |}{res}       192 
+{txt}         6 {c |}{res}        65         79          5 {txt}{c |}{res}       187 
+{txt}         7 {c |}{res}        15         59         21 {txt}{c |}{res}       195 
+{txt}         8 {c |}{res}        61         65          4 {txt}{c |}{res}       198 
+{txt}         9 {c |}{res}        73         16         18 {txt}{c |}{res}       197 
+{txt}        10 {c |}{res}        32         70         17 {txt}{c |}{res}       194 
+{txt}        11 {c |}{res}        50         15         10 {txt}{c |}{res}       200 
+{txt}        12 {c |}{res}         4        112          6 {txt}{c |}{res}       198 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       483        583        192 {txt}{c |}{res}     2,153 
+
+
+           {txt}{c |}            diagnosis
+      case {c |}         4          5          9 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+         1 {c |}{res}       112         10          0 {txt}{c |}{res}       197 
+{txt}         2 {c |}{res}        46         10          0 {txt}{c |}{res}       198 
+{txt}         3 {c |}{res}        63         51          0 {txt}{c |}{res}       197 
+{txt}         4 {c |}{res}        27          4          0 {txt}{c |}{res}       192 
+{txt}         6 {c |}{res}        16         21          1 {txt}{c |}{res}       187 
+{txt}         7 {c |}{res}        47         53          0 {txt}{c |}{res}       195 
+{txt}         8 {c |}{res}        23         45          0 {txt}{c |}{res}       198 
+{txt}         9 {c |}{res}        30         33         27 {txt}{c |}{res}       197 
+{txt}        10 {c |}{res}        46         29          0 {txt}{c |}{res}       194 
+{txt}        11 {c |}{res}        41         79          5 {txt}{c |}{res}       200 
+{txt}        12 {c |}{res}        14         62          0 {txt}{c |}{res}       198 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       465        397         33 {txt}{c |}{res}     2,153 
+{txt}
+{com}. 
+. tab institution_type diagnosis
+
+{txt}institutio {c |}            diagnosis
+    n_type {c |}         1          2          3 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+         1 {c |}{res}       122        176         58 {txt}{c |}{res}       747 
+{txt}         2 {c |}{res}         7         10          2 {txt}{c |}{res}        26 
+{txt}         3 {c |}{res}        35         28          9 {txt}{c |}{res}       125 
+{txt}         4 {c |}{res}       100        120         46 {txt}{c |}{res}       417 
+{txt}         5 {c |}{res}       196        202         60 {txt}{c |}{res}       678 
+{txt}         6 {c |}{res}        23         47         17 {txt}{c |}{res}       160 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       483        583        192 {txt}{c |}{res}     2,153 
+
+
+{txt}institutio {c |}            diagnosis
+    n_type {c |}         4          5          9 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+         1 {c |}{res}       228        144         19 {txt}{c |}{res}       747 
+{txt}         2 {c |}{res}         4          3          0 {txt}{c |}{res}        26 
+{txt}         3 {c |}{res}        19         33          1 {txt}{c |}{res}       125 
+{txt}         4 {c |}{res}        82         66          3 {txt}{c |}{res}       417 
+{txt}         5 {c |}{res}        86        129          5 {txt}{c |}{res}       678 
+{txt}         6 {c |}{res}        46         22          5 {txt}{c |}{res}       160 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       465        397         33 {txt}{c |}{res}     2,153 
+{txt}
+{com}. 
+. **************************** 1.2 处方数 *****************************
+. 
+. use "$working_data/2200_8.18.dta", clear
+{txt}
+{com}. 
+. keep if drug==1
+{txt}(1,046 observations deleted)
+
+{com}. 
+. tab diagnosis drug
+
+           {txt}{c |}    drug
+ diagnosis {c |}         1 {c |}     Total
+{hline 11}{c +}{hline 11}{c +}{hline 10}
+         1 {c |}{res}       282 {txt}{c |}{res}       282 
+{txt}         2 {c |}{res}       333 {txt}{c |}{res}       333 
+{txt}         3 {c |}{res}       116 {txt}{c |}{res}       116 
+{txt}         4 {c |}{res}       286 {txt}{c |}{res}       286 
+{txt}         5 {c |}{res}       113 {txt}{c |}{res}       113 
+{txt}         9 {c |}{res}        24 {txt}{c |}{res}        24 
+{txt}{hline 11}{c +}{hline 11}{c +}{hline 10}
+     Total {c |}{res}     1,154 {txt}{c |}{res}     1,154 
+{txt}
+{com}. 
+. 
+. ****************************1.3 中成药处方数 *****************************
+. 
+. use "$working_data/2200_8.18.dta", clear
+{txt}
+{com}. 
+. keep if visit_CPM==1
+{txt}(1,482 observations deleted)
+
+{com}. 
+. tab diagnosis visit_CPM
+
+           {txt}{c |} visit_CPM
+ diagnosis {c |}         1 {c |}     Total
+{hline 11}{c +}{hline 11}{c +}{hline 10}
+         1 {c |}{res}       176 {txt}{c |}{res}       176 
+{txt}         2 {c |}{res}       210 {txt}{c |}{res}       210 
+{txt}         3 {c |}{res}        80 {txt}{c |}{res}        80 
+{txt}         4 {c |}{res}       161 {txt}{c |}{res}       161 
+{txt}         5 {c |}{res}        75 {txt}{c |}{res}        75 
+{txt}         9 {c |}{res}        16 {txt}{c |}{res}        16 
+{txt}{hline 11}{c +}{hline 11}{c +}{hline 10}
+     Total {c |}{res}       718 {txt}{c |}{res}       718 
+{txt}
+{com}. 
+.         
+. *************************1.4 中成药联用处方数***************************
+. 
+. use "$working_data/2200_8.18.dta", clear
+{txt}
+{com}. 
+. keep if visit_Combination == 1 
+{txt}(1,744 observations deleted)
+
+{com}. 
+. tab diagnosis visit_Combination
+
+           {txt}{c |} visit_Comb
+           {c |}  ination
+ diagnosis {c |}         1 {c |}     Total
+{hline 11}{c +}{hline 11}{c +}{hline 10}
+         1 {c |}{res}       123 {txt}{c |}{res}       123 
+{txt}         2 {c |}{res}       136 {txt}{c |}{res}       136 
+{txt}         3 {c |}{res}        45 {txt}{c |}{res}        45 
+{txt}         4 {c |}{res}        96 {txt}{c |}{res}        96 
+{txt}         5 {c |}{res}        48 {txt}{c |}{res}        48 
+{txt}         9 {c |}{res}         8 {txt}{c |}{res}         8 
+{txt}{hline 11}{c +}{hline 11}{c +}{hline 10}
+     Total {c |}{res}       456 {txt}{c |}{res}       456 
+{txt}
+{com}. 
+. **************************** 1.3 chi-square test ****************************   
+. use "$working_data/2200_8.18.dta", clear
+{txt}
+{com}. keep if drug==1
+{txt}(1,046 observations deleted)
+
+{com}. 
+. tab province visit_CPM, chi
+
+           {txt}{c |}       visit_CPM
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}        25         47 {txt}{c |}{res}        72 
+{txt} guangdong {c |}{res}       126        145 {txt}{c |}{res}       271 
+{txt}   guizhou {c |}{res}        30         58 {txt}{c |}{res}        88 
+{txt}     hunan {c |}{res}        78        146 {txt}{c |}{res}       224 
+{txt}   neimeng {c |}{res}        20         43 {txt}{c |}{res}        63 
+{txt}    shanxi {c |}{res}        34         77 {txt}{c |}{res}       111 
+{txt}   sichuan {c |}{res}       123        202 {txt}{c |}{res}       325 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       436        718 {txt}{c |}{res}     1,154 
+
+{txt}          Pearson chi2({res}6{txt}) = {res} 13.7748  {txt} Pr = {res}0.032
+{txt}
+{com}. tab case visit_CPM, chi
+
+           {txt}{c |}       visit_CPM
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        84         77 {txt}{c |}{res}       161 
+{txt}         2 {c |}{res}        29         41 {txt}{c |}{res}        70 
+{txt}         3 {c |}{res}        42         25 {txt}{c |}{res}        67 
+{txt}         4 {c |}{res}        24        136 {txt}{c |}{res}       160 
+{txt}         6 {c |}{res}        76         95 {txt}{c |}{res}       171 
+{txt}         7 {c |}{res}        42         42 {txt}{c |}{res}        84 
+{txt}         8 {c |}{res}        21         52 {txt}{c |}{res}        73 
+{txt}         9 {c |}{res}        29         90 {txt}{c |}{res}       119 
+{txt}        10 {c |}{res}        32         49 {txt}{c |}{res}        81 
+{txt}        11 {c |}{res}        34         91 {txt}{c |}{res}       125 
+{txt}        12 {c |}{res}        23         20 {txt}{c |}{res}        43 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       436        718 {txt}{c |}{res}     1,154 
+
+{txt}         Pearson chi2({res}10{txt}) = {res} 98.3499  {txt} Pr = {res}0.000
+{txt}
+{com}. tab institution_type visit_CPM, chi
+
+{txt}institutio {c |}       visit_CPM
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       176        260 {txt}{c |}{res}       436 
+{txt}         2 {c |}{res}         5         14 {txt}{c |}{res}        19 
+{txt}         3 {c |}{res}        20         41 {txt}{c |}{res}        61 
+{txt}         4 {c |}{res}        70        148 {txt}{c |}{res}       218 
+{txt}         5 {c |}{res}       120        177 {txt}{c |}{res}       297 
+{txt}         6 {c |}{res}        45         78 {txt}{c |}{res}       123 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       436        718 {txt}{c |}{res}     1,154 
+
+{txt}          Pearson chi2({res}5{txt}) = {res}  6.8765  {txt} Pr = {res}0.230
+{txt}
+{com}. tab management_type visit_CPM, chi      
+
+{txt}management {c |}       visit_CPM
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       366        592 {txt}{c |}{res}       958 
+{txt}         2 {c |}{res}        70        126 {txt}{c |}{res}       196 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       436        718 {txt}{c |}{res}     1,154 
+
+{txt}          Pearson chi2({res}1{txt}) = {res}  0.4293  {txt} Pr = {res}0.512
+{txt}
+{com}. 
+. 
+.         
+. **************************** 1.4 chi-square test ****************************   
+. use "$working_data/2200_8.18.dta", clear
+{txt}
+{com}. 
+. keep if visit_Combination != 9 
+{txt}(1,435 observations deleted)
+
+{com}. 
+. tab province visit_Combination, chi
+
+           {txt}{c |}   visit_Combination
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}        20         27 {txt}{c |}{res}        47 
+{txt} guangdong {c |}{res}        33        112 {txt}{c |}{res}       145 
+{txt}   guizhou {c |}{res}        34         24 {txt}{c |}{res}        58 
+{txt}     hunan {c |}{res}        47         99 {txt}{c |}{res}       146 
+{txt}   neimeng {c |}{res}        19         24 {txt}{c |}{res}        43 
+{txt}    shanxi {c |}{res}        36         41 {txt}{c |}{res}        77 
+{txt}   sichuan {c |}{res}        73        129 {txt}{c |}{res}       202 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       262        456 {txt}{c |}{res}       718 
+
+{txt}          Pearson chi2({res}6{txt}) = {res} 30.5737  {txt} Pr = {res}0.000
+{txt}
+{com}. tab case visit_Combination, chi
+
+           {txt}{c |}   visit_Combination
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        23         54 {txt}{c |}{res}        77 
+{txt}         2 {c |}{res}        35          6 {txt}{c |}{res}        41 
+{txt}         3 {c |}{res}         3         22 {txt}{c |}{res}        25 
+{txt}         4 {c |}{res}        35        101 {txt}{c |}{res}       136 
+{txt}         6 {c |}{res}        23         72 {txt}{c |}{res}        95 
+{txt}         7 {c |}{res}        11         31 {txt}{c |}{res}        42 
+{txt}         8 {c |}{res}        27         25 {txt}{c |}{res}        52 
+{txt}         9 {c |}{res}        37         53 {txt}{c |}{res}        90 
+{txt}        10 {c |}{res}        34         15 {txt}{c |}{res}        49 
+{txt}        11 {c |}{res}        24         67 {txt}{c |}{res}        91 
+{txt}        12 {c |}{res}        10         10 {txt}{c |}{res}        20 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       262        456 {txt}{c |}{res}       718 
+
+{txt}         Pearson chi2({res}10{txt}) = {res} 99.7300  {txt} Pr = {res}0.000
+{txt}
+{com}. tab institution_type visit_Combination, chi
+
+{txt}institutio {c |}   visit_Combination
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       118        142 {txt}{c |}{res}       260 
+{txt}         2 {c |}{res}         4         10 {txt}{c |}{res}        14 
+{txt}         3 {c |}{res}        15         26 {txt}{c |}{res}        41 
+{txt}         4 {c |}{res}        48        100 {txt}{c |}{res}       148 
+{txt}         5 {c |}{res}        51        126 {txt}{c |}{res}       177 
+{txt}         6 {c |}{res}        26         52 {txt}{c |}{res}        78 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       262        456 {txt}{c |}{res}       718 
+
+{txt}          Pearson chi2({res}5{txt}) = {res} 15.1423  {txt} Pr = {res}0.010
+{txt}
+{com}. tab management_type visit_Combination, chi
+
+{txt}management {c |}   visit_Combination
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       219        373 {txt}{c |}{res}       592 
+{txt}         2 {c |}{res}        43         83 {txt}{c |}{res}       126 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       262        456 {txt}{c |}{res}       718 
+
+{txt}          Pearson chi2({res}1{txt}) = {res}  0.3683  {txt} Pr = {res}0.544
+{txt}
+{com}. 
+. 
+. *************************chi-square test**************************
+. import excel "$raw_data/病例基药使用情况stata-yh0818.xlsx", firstrow clear
+{res}{text}(13 vars, 988 obs)
+
+{com}. 
+. tab province drug_basic, chi
+
+           {txt}{c |}      drug_basic 
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}        32         26 {txt}{c |}{res}        58 
+{txt} guangdong {c |}{res}       121         73 {txt}{c |}{res}       194 
+{txt}   guizhou {c |}{res}        36         42 {txt}{c |}{res}        78 
+{txt}     hunan {c |}{res}       124         79 {txt}{c |}{res}       203 
+{txt}   neimeng {c |}{res}        40         24 {txt}{c |}{res}        64 
+{txt}    shanxi {c |}{res}        77         35 {txt}{c |}{res}       112 
+{txt}   sichuan {c |}{res}       155        124 {txt}{c |}{res}       279 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       585        403 {txt}{c |}{res}       988 
+
+{txt}          Pearson chi2({res}6{txt}) = {res} 13.0447  {txt} Pr = {res}0.042
+{txt}
+{com}. 
+. tab case drug_basic, chi
+
+           {txt}{c |}      drug_basic 
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        56         40 {txt}{c |}{res}        96 
+{txt}         2 {c |}{res}        42         15 {txt}{c |}{res}        57 
+{txt}         3 {c |}{res}        21          7 {txt}{c |}{res}        28 
+{txt}         4 {c |}{res}       116         86 {txt}{c |}{res}       202 
+{txt}         6 {c |}{res}        72         57 {txt}{c |}{res}       129 
+{txt}         7 {c |}{res}        47         15 {txt}{c |}{res}        62 
+{txt}         8 {c |}{res}        26         46 {txt}{c |}{res}        72 
+{txt}         9 {c |}{res}        81         50 {txt}{c |}{res}       131 
+{txt}        10 {c |}{res}        31         34 {txt}{c |}{res}        65 
+{txt}        11 {c |}{res}        74         41 {txt}{c |}{res}       115 
+{txt}        12 {c |}{res}        19         12 {txt}{c |}{res}        31 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       585        403 {txt}{c |}{res}       988 
+
+{txt}         Pearson chi2({res}10{txt}) = {res} 36.9806  {txt} Pr = {res}0.000
+{txt}
+{com}. 
+. tab institution_type drug_basic, chi
+
+{txt}institutio {c |}      drug_basic 
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       255        109 {txt}{c |}{res}       364 
+{txt}         2 {c |}{res}         9         13 {txt}{c |}{res}        22 
+{txt}         3 {c |}{res}        28         35 {txt}{c |}{res}        63 
+{txt}         4 {c |}{res}        82        123 {txt}{c |}{res}       205 
+{txt}         5 {c |}{res}       126        105 {txt}{c |}{res}       231 
+{txt}         6 {c |}{res}        85         18 {txt}{c |}{res}       103 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       585        403 {txt}{c |}{res}       988 
+
+{txt}          Pearson chi2({res}5{txt}) = {res} 83.0489  {txt} Pr = {res}0.000
+{txt}
+{com}. 
+. tab management_type drug_basic, chi
+
+{txt}management {c |}      drug_basic 
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       467        349 {txt}{c |}{res}       816 
+{txt}         2 {c |}{res}       118         54 {txt}{c |}{res}       172 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       585        403 {txt}{c |}{res}       988 
+
+{txt}          Pearson chi2({res}1{txt}) = {res}  7.6096  {txt} Pr = {res}0.006
+{txt}
+{com}. 
+. ***************************
+. 
+. tab province drug_insurance, chi
+
+           {txt}{c |}    drug_insurance
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}        18         40 {txt}{c |}{res}        58 
+{txt} guangdong {c |}{res}        57        137 {txt}{c |}{res}       194 
+{txt}   guizhou {c |}{res}        19         59 {txt}{c |}{res}        78 
+{txt}     hunan {c |}{res}        83        120 {txt}{c |}{res}       203 
+{txt}   neimeng {c |}{res}        26         38 {txt}{c |}{res}        64 
+{txt}    shanxi {c |}{res}        32         80 {txt}{c |}{res}       112 
+{txt}   sichuan {c |}{res}        84        195 {txt}{c |}{res}       279 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       319        669 {txt}{c |}{res}       988 
+
+{txt}          Pearson chi2({res}6{txt}) = {res} 13.2487  {txt} Pr = {res}0.039
+{txt}
+{com}. 
+. tab case drug_insurance, chi
+
+           {txt}{c |}    drug_insurance
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        25         71 {txt}{c |}{res}        96 
+{txt}         2 {c |}{res}        24         33 {txt}{c |}{res}        57 
+{txt}         3 {c |}{res}        14         14 {txt}{c |}{res}        28 
+{txt}         4 {c |}{res}        74        128 {txt}{c |}{res}       202 
+{txt}         6 {c |}{res}        38         91 {txt}{c |}{res}       129 
+{txt}         7 {c |}{res}        31         31 {txt}{c |}{res}        62 
+{txt}         8 {c |}{res}        10         62 {txt}{c |}{res}        72 
+{txt}         9 {c |}{res}        35         96 {txt}{c |}{res}       131 
+{txt}        10 {c |}{res}        20         45 {txt}{c |}{res}        65 
+{txt}        11 {c |}{res}        34         81 {txt}{c |}{res}       115 
+{txt}        12 {c |}{res}        14         17 {txt}{c |}{res}        31 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       319        669 {txt}{c |}{res}       988 
+
+{txt}         Pearson chi2({res}10{txt}) = {res} 35.1744  {txt} Pr = {res}0.000
+{txt}
+{com}. 
+. tab institution_type drug_insurance, chi
+
+{txt}institutio {c |}    drug_insurance
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       154        210 {txt}{c |}{res}       364 
+{txt}         2 {c |}{res}         6         16 {txt}{c |}{res}        22 
+{txt}         3 {c |}{res}        11         52 {txt}{c |}{res}        63 
+{txt}         4 {c |}{res}        33        172 {txt}{c |}{res}       205 
+{txt}         5 {c |}{res}        53        178 {txt}{c |}{res}       231 
+{txt}         6 {c |}{res}        62         41 {txt}{c |}{res}       103 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       319        669 {txt}{c |}{res}       988 
+
+{txt}          Pearson chi2({res}5{txt}) = {res} 93.7976  {txt} Pr = {res}0.000
+{txt}
+{com}. 
+. tab management_type drug_insurance, chi  
+
+{txt}management {c |}    drug_insurance
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       240        576 {txt}{c |}{res}       816 
+{txt}         2 {c |}{res}        79         93 {txt}{c |}{res}       172 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       319        669 {txt}{c |}{res}       988 
+
+{txt}          Pearson chi2({res}1{txt}) = {res} 17.7296  {txt} Pr = {res}0.000
+{txt}
+{com}. 
+. ****************************************************
+. import excel "$raw_data/中成药用药合理性评价-stata_0818.xlsx", sheet("点评") cellrange(A1:X1905) firstrow clear
+{res}{text}(24 vars, 1,904 obs)
+
+{com}. 
+. tab diagnosis
+
+  {txt}diagnosis {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        469       24.63       24.63
+{txt}          2 {c |}{res}        566       29.73       54.36
+{txt}          3 {c |}{res}        200       10.50       64.86
+{txt}          4 {c |}{res}        421       22.11       86.97
+{txt}          5 {c |}{res}        197       10.35       97.32
+{txt}          9 {c |}{res}         51        2.68      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,904      100.00
+{txt}
+{com}. tab diagnosis drug_evaluation
+
+           {txt}{c |}         drug_evaluation
+ diagnosis {c |}         0          1          9 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+         1 {c |}{res}       111        190        168 {txt}{c |}{res}       469 
+{txt}         2 {c |}{res}       169        163        234 {txt}{c |}{res}       566 
+{txt}         3 {c |}{res}        69         58         73 {txt}{c |}{res}       200 
+{txt}         4 {c |}{res}       112        103        206 {txt}{c |}{res}       421 
+{txt}         5 {c |}{res}        68         41         88 {txt}{c |}{res}       197 
+{txt}         9 {c |}{res}        15          6         30 {txt}{c |}{res}        51 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       544        561        799 {txt}{c |}{res}     1,904 
+{txt}
+{com}. 
+. tab 适应症是否合理
+
+     {txt}适应症 {c |}
+     是否合 {c |}
+         理 {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}        674       35.40       35.40
+{txt}          1 {c |}{res}      1,120       58.82       94.22
+{txt}          9 {c |}{res}        110        5.78      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,904      100.00
+{txt}
+{com}. tab 用量是否合理
+
+     {txt}用量是 {c |}
+     否合理 {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}        147        7.72        7.72
+{txt}          1 {c |}{res}        959       50.37       58.09
+{txt}          9 {c |}{res}        798       41.91      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,904      100.00
+{txt}
+{com}. tab 是否存在重复用药否1是0 
+
+     {txt}是否存 {c |}
+     在重复 {c |}
+     用药（ {c |}
+    否：1； {c |}
+    是：0） {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}         70        3.68        3.68
+{txt}          1 {c |}{res}      1,727       90.70       94.38
+{txt}          9 {c |}{res}        107        5.62      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,904      100.00
+{txt}
+{com}. tab 遴选药物是否合理 
+
+     {txt}遴选药 {c |}
+     物是否 {c |}
+       合理 {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      1,797       94.38       94.38
+{txt}          9 {c |}{res}        107        5.62      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,904      100.00
+{txt}
+{com}. tab 联合用药是否合理 
+
+     {txt}联合用 {c |}
+     药是否 {c |}
+       合理 {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}         10        0.53        0.53
+{txt}          1 {c |}{res}      1,787       93.86       94.38
+{txt}          9 {c |}{res}        107        5.62      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,904      100.00
+{txt}
+{com}. tab 是否存在配伍禁忌否1是0
+
+     {txt}是否存 {c |}
+     在配伍 {c |}
+     禁忌（ {c |}
+    否：1； {c |}
+    是：0） {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      1,797       94.38       94.38
+{txt}          9 {c |}{res}        107        5.62      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,904      100.00
+{txt}
+{com}. 
+. tab province drug_evaluation
+
+           {txt}{c |}         drug_evaluation
+  province {c |}         0          1          9 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+     gansu {c |}{res}        24         22         52 {txt}{c |}{res}        98 
+{txt} guangdong {c |}{res}       164        169        131 {txt}{c |}{res}       464 
+{txt}   guizhou {c |}{res}        29         27         58 {txt}{c |}{res}       114 
+{txt}     hunan {c |}{res}        95         82        171 {txt}{c |}{res}       348 
+{txt}   neimeng {c |}{res}        27         34         43 {txt}{c |}{res}       104 
+{txt}    shanxi {c |}{res}        45         62         83 {txt}{c |}{res}       190 
+{txt}   sichuan {c |}{res}       160        165        261 {txt}{c |}{res}       586 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       544        561        799 {txt}{c |}{res}     1,904 
+{txt}
+{com}. tab case drug_evaluation
+
+           {txt}{c |}         drug_evaluation
+      case {c |}         0          1          9 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+         1 {c |}{res}        63         82         52 {txt}{c |}{res}       197 
+{txt}         2 {c |}{res}         9         24         42 {txt}{c |}{res}        75 
+{txt}         3 {c |}{res}        15         26         40 {txt}{c |}{res}        81 
+{txt}         4 {c |}{res}       119        118        161 {txt}{c |}{res}       398 
+{txt}         6 {c |}{res}        51        118        108 {txt}{c |}{res}       277 
+{txt}         7 {c |}{res}        61         14         49 {txt}{c |}{res}       124 
+{txt}         8 {c |}{res}        40         42         38 {txt}{c |}{res}       120 
+{txt}         9 {c |}{res}        36        106         94 {txt}{c |}{res}       236 
+{txt}        10 {c |}{res}        38          9         52 {txt}{c |}{res}        99 
+{txt}        11 {c |}{res}       101         19        134 {txt}{c |}{res}       254 
+{txt}        12 {c |}{res}        11          3         29 {txt}{c |}{res}        43 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       544        561        799 {txt}{c |}{res}     1,904 
+{txt}
+{com}. tab institution_type drug_evaluation
+
+{txt}institutio {c |}         drug_evaluation
+    n_type {c |}         0          1          9 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+         1 {c |}{res}       111        113        431 {txt}{c |}{res}       655 
+{txt}         2 {c |}{res}        11          8         22 {txt}{c |}{res}        41 
+{txt}         3 {c |}{res}        41         34         47 {txt}{c |}{res}       122 
+{txt}         4 {c |}{res}       179        144         93 {txt}{c |}{res}       416 
+{txt}         5 {c |}{res}       161        225         84 {txt}{c |}{res}       470 
+{txt}         6 {c |}{res}        41         37        122 {txt}{c |}{res}       200 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       544        561        799 {txt}{c |}{res}     1,904 
+{txt}
+{com}. tab management_type drug_evaluation
+
+{txt}management {c |}         drug_evaluation
+     _type {c |}         0          1          9 {c |}     Total
+{hline 11}{c +}{hline 33}{c +}{hline 10}
+         1 {c |}{res}       469        492        620 {txt}{c |}{res}     1,581 
+{txt}         2 {c |}{res}        75         69        179 {txt}{c |}{res}       323 
+{txt}{hline 11}{c +}{hline 33}{c +}{hline 10}
+     Total {c |}{res}       544        561        799 {txt}{c |}{res}     1,904 
+{txt}
+{com}. 
+. 
+. ****************************************************
+. drop if drug_evaluation == 9
+{txt}(799 observations deleted)
+
+{com}. 
+. bysort diagnosis: tab province drug_evaluation
+
+{txt}{hline}
+-> diagnosis = 1
+
+           {c |}    drug_evaluation
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         4          6 {txt}{c |}{res}        10 
+{txt} guangdong {c |}{res}        25         58 {txt}{c |}{res}        83 
+{txt}   guizhou {c |}{res}         3          5 {txt}{c |}{res}         8 
+{txt}     hunan {c |}{res}        19         28 {txt}{c |}{res}        47 
+{txt}   neimeng {c |}{res}         8          8 {txt}{c |}{res}        16 
+{txt}    shanxi {c |}{res}        10         23 {txt}{c |}{res}        33 
+{txt}   sichuan {c |}{res}        42         62 {txt}{c |}{res}       104 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       111        190 {txt}{c |}{res}       301 
+
+{txt}{hline}
+-> diagnosis = 2
+
+           {c |}    drug_evaluation
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         9         10 {txt}{c |}{res}        19 
+{txt} guangdong {c |}{res}        62         60 {txt}{c |}{res}       122 
+{txt}   guizhou {c |}{res}        13         10 {txt}{c |}{res}        23 
+{txt}     hunan {c |}{res}        26         16 {txt}{c |}{res}        42 
+{txt}   neimeng {c |}{res}        10         15 {txt}{c |}{res}        25 
+{txt}    shanxi {c |}{res}         6         17 {txt}{c |}{res}        23 
+{txt}   sichuan {c |}{res}        43         35 {txt}{c |}{res}        78 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       169        163 {txt}{c |}{res}       332 
+
+{txt}{hline}
+-> diagnosis = 3
+
+           {c |}    drug_evaluation
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         3          3 {txt}{c |}{res}         6 
+{txt} guangdong {c |}{res}        14         10 {txt}{c |}{res}        24 
+{txt}   guizhou {c |}{res}         7          3 {txt}{c |}{res}        10 
+{txt}     hunan {c |}{res}        16          9 {txt}{c |}{res}        25 
+{txt}   neimeng {c |}{res}         2          4 {txt}{c |}{res}         6 
+{txt}    shanxi {c |}{res}        11          6 {txt}{c |}{res}        17 
+{txt}   sichuan {c |}{res}        16         23 {txt}{c |}{res}        39 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        69         58 {txt}{c |}{res}       127 
+
+{txt}{hline}
+-> diagnosis = 4
+
+           {c |}    drug_evaluation
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         8          3 {txt}{c |}{res}        11 
+{txt} guangdong {c |}{res}        34         27 {txt}{c |}{res}        61 
+{txt}   guizhou {c |}{res}         2          8 {txt}{c |}{res}        10 
+{txt}     hunan {c |}{res}        26         22 {txt}{c |}{res}        48 
+{txt}   neimeng {c |}{res}         4          5 {txt}{c |}{res}         9 
+{txt}    shanxi {c |}{res}         9         12 {txt}{c |}{res}        21 
+{txt}   sichuan {c |}{res}        29         26 {txt}{c |}{res}        55 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       112        103 {txt}{c |}{res}       215 
+
+{txt}{hline}
+-> diagnosis = 5
+
+           {c |}    drug_evaluation
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+ guangdong {c |}{res}        21         12 {txt}{c |}{res}        33 
+{txt}   guizhou {c |}{res}         4          1 {txt}{c |}{res}         5 
+{txt}     hunan {c |}{res}         8          7 {txt}{c |}{res}        15 
+{txt}   neimeng {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}    shanxi {c |}{res}         5          2 {txt}{c |}{res}         7 
+{txt}   sichuan {c |}{res}        27         17 {txt}{c |}{res}        44 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        68         41 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 9
+
+           {c |}    drug_evaluation
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+ guangdong {c |}{res}         8          2 {txt}{c |}{res}        10 
+{txt}    shanxi {c |}{res}         4          2 {txt}{c |}{res}         6 
+{txt}   sichuan {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        15          6 {txt}{c |}{res}        21 
+
+{txt}
+{com}. bysort diagnosis: tab case drug_evaluation
+
+{txt}{hline}
+-> diagnosis = 1
+
+           {c |}    drug_evaluation
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         7         17 {txt}{c |}{res}        24 
+{txt}         2 {c |}{res}         5          8 {txt}{c |}{res}        13 
+{txt}         3 {c |}{res}         4          7 {txt}{c |}{res}        11 
+{txt}         4 {c |}{res}        28         34 {txt}{c |}{res}        62 
+{txt}         6 {c |}{res}        18         48 {txt}{c |}{res}        66 
+{txt}         8 {c |}{res}        15         21 {txt}{c |}{res}        36 
+{txt}         9 {c |}{res}        11         51 {txt}{c |}{res}        62 
+{txt}        10 {c |}{res}         7          1 {txt}{c |}{res}         8 
+{txt}        11 {c |}{res}        16          3 {txt}{c |}{res}        19 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       111        190 {txt}{c |}{res}       301 
+
+{txt}{hline}
+-> diagnosis = 2
+
+           {c |}    drug_evaluation
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        18         20 {txt}{c |}{res}        38 
+{txt}         2 {c |}{res}         0          3 {txt}{c |}{res}         3 
+{txt}         3 {c |}{res}         2          2 {txt}{c |}{res}         4 
+{txt}         4 {c |}{res}        52         47 {txt}{c |}{res}        99 
+{txt}         6 {c |}{res}        22         49 {txt}{c |}{res}        71 
+{txt}         7 {c |}{res}        36         11 {txt}{c |}{res}        47 
+{txt}         8 {c |}{res}        11         16 {txt}{c |}{res}        27 
+{txt}         9 {c |}{res}         2          9 {txt}{c |}{res}        11 
+{txt}        10 {c |}{res}        10          1 {txt}{c |}{res}        11 
+{txt}        11 {c |}{res}        14          3 {txt}{c |}{res}        17 
+{txt}        12 {c |}{res}         2          2 {txt}{c |}{res}         4 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       169        163 {txt}{c |}{res}       332 
+
+{txt}{hline}
+-> diagnosis = 3
+
+           {c |}    drug_evaluation
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         4          7 {txt}{c |}{res}        11 
+{txt}         2 {c |}{res}         2          6 {txt}{c |}{res}         8 
+{txt}         3 {c |}{res}         1          2 {txt}{c |}{res}         3 
+{txt}         4 {c |}{res}        24         22 {txt}{c |}{res}        46 
+{txt}         6 {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt}         7 {c |}{res}        10          3 {txt}{c |}{res}        13 
+{txt}         8 {c |}{res}         2          0 {txt}{c |}{res}         2 
+{txt}         9 {c |}{res}         4         13 {txt}{c |}{res}        17 
+{txt}        10 {c |}{res}         4          3 {txt}{c |}{res}         7 
+{txt}        11 {c |}{res}        18          1 {txt}{c |}{res}        19 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        69         58 {txt}{c |}{res}       127 
+
+{txt}{hline}
+-> diagnosis = 4
+
+           {c |}    drug_evaluation
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        32         36 {txt}{c |}{res}        68 
+{txt}         2 {c |}{res}         2          7 {txt}{c |}{res}         9 
+{txt}         3 {c |}{res}         7         12 {txt}{c |}{res}        19 
+{txt}         4 {c |}{res}        15         15 {txt}{c |}{res}        30 
+{txt}         6 {c |}{res}         2          7 {txt}{c |}{res}         9 
+{txt}         7 {c |}{res}         9          0 {txt}{c |}{res}         9 
+{txt}         8 {c |}{res}        11          4 {txt}{c |}{res}        15 
+{txt}         9 {c |}{res}         4         16 {txt}{c |}{res}        20 
+{txt}        10 {c |}{res}        10          2 {txt}{c |}{res}        12 
+{txt}        11 {c |}{res}        13          3 {txt}{c |}{res}        16 
+{txt}        12 {c |}{res}         7          1 {txt}{c |}{res}         8 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       112        103 {txt}{c |}{res}       215 
+
+{txt}{hline}
+-> diagnosis = 5
+
+           {c |}    drug_evaluation
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         2          2 {txt}{c |}{res}         4 
+{txt}         3 {c |}{res}         1          3 {txt}{c |}{res}         4 
+{txt}         6 {c |}{res}         9         13 {txt}{c |}{res}        22 
+{txt}         7 {c |}{res}         6          0 {txt}{c |}{res}         6 
+{txt}         8 {c |}{res}         1          1 {txt}{c |}{res}         2 
+{txt}         9 {c |}{res}         3         11 {txt}{c |}{res}        14 
+{txt}        10 {c |}{res}         7          2 {txt}{c |}{res}         9 
+{txt}        11 {c |}{res}        37          9 {txt}{c |}{res}        46 
+{txt}        12 {c |}{res}         2          0 {txt}{c |}{res}         2 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        68         41 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 9
+
+           {c |}    drug_evaluation
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         9 {c |}{res}        12          6 {txt}{c |}{res}        18 
+{txt}        11 {c |}{res}         3          0 {txt}{c |}{res}         3 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        15          6 {txt}{c |}{res}        21 
+
+{txt}
+{com}. bysort diagnosis: tab institution_type drug_evaluation
+
+{txt}{hline}
+-> diagnosis = 1
+
+institutio {c |}    drug_evaluation
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        19         33 {txt}{c |}{res}        52 
+{txt}         2 {c |}{res}         1          2 {txt}{c |}{res}         3 
+{txt}         3 {c |}{res}         8         13 {txt}{c |}{res}        21 
+{txt}         4 {c |}{res}        41         49 {txt}{c |}{res}        90 
+{txt}         5 {c |}{res}        37         84 {txt}{c |}{res}       121 
+{txt}         6 {c |}{res}         5          9 {txt}{c |}{res}        14 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       111        190 {txt}{c |}{res}       301 
+
+{txt}{hline}
+-> diagnosis = 2
+
+institutio {c |}    drug_evaluation
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        34         32 {txt}{c |}{res}        66 
+{txt}         2 {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}         3 {c |}{res}         8         10 {txt}{c |}{res}        18 
+{txt}         4 {c |}{res}        55         37 {txt}{c |}{res}        92 
+{txt}         5 {c |}{res}        63         73 {txt}{c |}{res}       136 
+{txt}         6 {c |}{res}         6          9 {txt}{c |}{res}        15 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       169        163 {txt}{c |}{res}       332 
+
+{txt}{hline}
+-> diagnosis = 3
+
+institutio {c |}    drug_evaluation
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         7         12 {txt}{c |}{res}        19 
+{txt}         2 {c |}{res}         2          3 {txt}{c |}{res}         5 
+{txt}         3 {c |}{res}         6          1 {txt}{c |}{res}         7 
+{txt}         4 {c |}{res}        24         21 {txt}{c |}{res}        45 
+{txt}         5 {c |}{res}        23         18 {txt}{c |}{res}        41 
+{txt}         6 {c |}{res}         7          3 {txt}{c |}{res}        10 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        69         58 {txt}{c |}{res}       127 
+
+{txt}{hline}
+-> diagnosis = 4
+
+institutio {c |}    drug_evaluation
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        30         28 {txt}{c |}{res}        58 
+{txt}         2 {c |}{res}         1          0 {txt}{c |}{res}         1 
+{txt}         3 {c |}{res}        10          7 {txt}{c |}{res}        17 
+{txt}         4 {c |}{res}        33         25 {txt}{c |}{res}        58 
+{txt}         5 {c |}{res}        20         32 {txt}{c |}{res}        52 
+{txt}         6 {c |}{res}        18         11 {txt}{c |}{res}        29 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       112        103 {txt}{c |}{res}       215 
+
+{txt}{hline}
+-> diagnosis = 5
+
+institutio {c |}    drug_evaluation
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        20          8 {txt}{c |}{res}        28 
+{txt}         2 {c |}{res}         4          1 {txt}{c |}{res}         5 
+{txt}         3 {c |}{res}         5          2 {txt}{c |}{res}         7 
+{txt}         4 {c |}{res}        22         11 {txt}{c |}{res}        33 
+{txt}         5 {c |}{res}        15         18 {txt}{c |}{res}        33 
+{txt}         6 {c |}{res}         2          1 {txt}{c |}{res}         3 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        68         41 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 9
+
+institutio {c |}    drug_evaluation
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         1          0 {txt}{c |}{res}         1 
+{txt}         3 {c |}{res}         4          1 {txt}{c |}{res}         5 
+{txt}         4 {c |}{res}         4          1 {txt}{c |}{res}         5 
+{txt}         5 {c |}{res}         3          0 {txt}{c |}{res}         3 
+{txt}         6 {c |}{res}         3          4 {txt}{c |}{res}         7 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        15          6 {txt}{c |}{res}        21 
+
+{txt}
+{com}. bysort diagnosis: tab management_type drug_evaluation
+
+{txt}{hline}
+-> diagnosis = 1
+
+management {c |}    drug_evaluation
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        97        171 {txt}{c |}{res}       268 
+{txt}         2 {c |}{res}        14         19 {txt}{c |}{res}        33 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       111        190 {txt}{c |}{res}       301 
+
+{txt}{hline}
+-> diagnosis = 2
+
+management {c |}    drug_evaluation
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       155        145 {txt}{c |}{res}       300 
+{txt}         2 {c |}{res}        14         18 {txt}{c |}{res}        32 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       169        163 {txt}{c |}{res}       332 
+
+{txt}{hline}
+-> diagnosis = 3
+
+management {c |}    drug_evaluation
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        56         52 {txt}{c |}{res}       108 
+{txt}         2 {c |}{res}        13          6 {txt}{c |}{res}        19 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        69         58 {txt}{c |}{res}       127 
+
+{txt}{hline}
+-> diagnosis = 4
+
+management {c |}    drug_evaluation
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        91         85 {txt}{c |}{res}       176 
+{txt}         2 {c |}{res}        21         18 {txt}{c |}{res}        39 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       112        103 {txt}{c |}{res}       215 
+
+{txt}{hline}
+-> diagnosis = 5
+
+management {c |}    drug_evaluation
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        58         37 {txt}{c |}{res}        95 
+{txt}         2 {c |}{res}        10          4 {txt}{c |}{res}        14 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        68         41 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 9
+
+management {c |}    drug_evaluation
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        12          2 {txt}{c |}{res}        14 
+{txt}         2 {c |}{res}         3          4 {txt}{c |}{res}         7 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        15          6 {txt}{c |}{res}        21 
+
+{txt}
+{com}. 
+. import excel "$raw_data/病例基药使用情况stata-yh0818.xlsx", firstrow clear
+{res}{text}(13 vars, 988 obs)
+
+{com}. bysort diagnosis: tab province drug_basic
+
+{txt}{hline}
+-> diagnosis = 1
+
+           {c |}      drug_basic 
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         4          4 {txt}{c |}{res}         8 
+{txt} guangdong {c |}{res}        27         24 {txt}{c |}{res}        51 
+{txt}   guizhou {c |}{res}         4         11 {txt}{c |}{res}        15 
+{txt}     hunan {c |}{res}        29         23 {txt}{c |}{res}        52 
+{txt}   neimeng {c |}{res}         5          8 {txt}{c |}{res}        13 
+{txt}    shanxi {c |}{res}        18          8 {txt}{c |}{res}        26 
+{txt}   sichuan {c |}{res}        36         38 {txt}{c |}{res}        74 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       123        116 {txt}{c |}{res}       239 
+
+{txt}{hline}
+-> diagnosis = 2
+
+           {c |}      drug_basic 
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}        11          8 {txt}{c |}{res}        19 
+{txt} guangdong {c |}{res}        45         24 {txt}{c |}{res}        69 
+{txt}   guizhou {c |}{res}        15         16 {txt}{c |}{res}        31 
+{txt}     hunan {c |}{res}        35         24 {txt}{c |}{res}        59 
+{txt}   neimeng {c |}{res}        13         10 {txt}{c |}{res}        23 
+{txt}    shanxi {c |}{res}        17          8 {txt}{c |}{res}        25 
+{txt}   sichuan {c |}{res}        30         31 {txt}{c |}{res}        61 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       166        121 {txt}{c |}{res}       287 
+
+{txt}{hline}
+-> diagnosis = 3
+
+           {c |}      drug_basic 
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         6          4 {txt}{c |}{res}        10 
+{txt} guangdong {c |}{res}        13          5 {txt}{c |}{res}        18 
+{txt}   guizhou {c |}{res}         5          2 {txt}{c |}{res}         7 
+{txt}     hunan {c |}{res}        14         13 {txt}{c |}{res}        27 
+{txt}   neimeng {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}    shanxi {c |}{res}         7          4 {txt}{c |}{res}        11 
+{txt}   sichuan {c |}{res}        14         17 {txt}{c |}{res}        31 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        62         47 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 4
+
+           {c |}      drug_basic 
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}        10          8 {txt}{c |}{res}        18 
+{txt} guangdong {c |}{res}        22         11 {txt}{c |}{res}        33 
+{txt}   guizhou {c |}{res}         8         11 {txt}{c |}{res}        19 
+{txt}     hunan {c |}{res}        33         14 {txt}{c |}{res}        47 
+{txt}   neimeng {c |}{res}        12          1 {txt}{c |}{res}        13 
+{txt}    shanxi {c |}{res}        20         11 {txt}{c |}{res}        31 
+{txt}   sichuan {c |}{res}        49         23 {txt}{c |}{res}        72 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       154         79 {txt}{c |}{res}       233 
+
+{txt}{hline}
+-> diagnosis = 5
+
+           {c |}      drug_basic 
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt} guangdong {c |}{res}        12          7 {txt}{c |}{res}        19 
+{txt}   guizhou {c |}{res}         4          2 {txt}{c |}{res}         6 
+{txt}     hunan {c |}{res}        13          4 {txt}{c |}{res}        17 
+{txt}   neimeng {c |}{res}         4          3 {txt}{c |}{res}         7 
+{txt}    shanxi {c |}{res}         9          1 {txt}{c |}{res}        10 
+{txt}   sichuan {c |}{res}        22         15 {txt}{c |}{res}        37 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        64         33 {txt}{c |}{res}        97 
+
+{txt}{hline}
+-> diagnosis = 9
+
+           {c |}      drug_basic 
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         1          1 {txt}{c |}{res}         2 
+{txt} guangdong {c |}{res}         2          2 {txt}{c |}{res}         4 
+{txt}     hunan {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt}   neimeng {c |}{res}         3          0 {txt}{c |}{res}         3 
+{txt}    shanxi {c |}{res}         6          3 {txt}{c |}{res}         9 
+{txt}   sichuan {c |}{res}         4          0 {txt}{c |}{res}         4 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        16          7 {txt}{c |}{res}        23 
+
+{txt}
+{com}. bysort diagnosis: tab case drug_basic
+
+{txt}{hline}
+-> diagnosis = 1
+
+           {c |}      drug_basic 
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         6          5 {txt}{c |}{res}        11 
+{txt}         2 {c |}{res}         8          7 {txt}{c |}{res}        15 
+{txt}         3 {c |}{res}         4          0 {txt}{c |}{res}         4 
+{txt}         4 {c |}{res}        15         25 {txt}{c |}{res}        40 
+{txt}         6 {c |}{res}        24         23 {txt}{c |}{res}        47 
+{txt}         7 {c |}{res}         1          0 {txt}{c |}{res}         1 
+{txt}         8 {c |}{res}         6         16 {txt}{c |}{res}        22 
+{txt}         9 {c |}{res}        40         26 {txt}{c |}{res}        66 
+{txt}        10 {c |}{res}         2          6 {txt}{c |}{res}         8 
+{txt}        11 {c |}{res}        17          8 {txt}{c |}{res}        25 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       123        116 {txt}{c |}{res}       239 
+
+{txt}{hline}
+-> diagnosis = 2
+
+           {c |}      drug_basic 
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        11          7 {txt}{c |}{res}        18 
+{txt}         2 {c |}{res}         8          2 {txt}{c |}{res}        10 
+{txt}         3 {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}         4 {c |}{res}        53         35 {txt}{c |}{res}        88 
+{txt}         6 {c |}{res}        31         24 {txt}{c |}{res}        55 
+{txt}         7 {c |}{res}        21          9 {txt}{c |}{res}        30 
+{txt}         8 {c |}{res}         8         19 {txt}{c |}{res}        27 
+{txt}         9 {c |}{res}         4          2 {txt}{c |}{res}         6 
+{txt}        10 {c |}{res}        10          8 {txt}{c |}{res}        18 
+{txt}        11 {c |}{res}        10          6 {txt}{c |}{res}        16 
+{txt}        12 {c |}{res}         7          7 {txt}{c |}{res}        14 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       166        121 {txt}{c |}{res}       287 
+
+{txt}{hline}
+-> diagnosis = 3
+
+           {c |}      drug_basic 
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         8          3 {txt}{c |}{res}        11 
+{txt}         2 {c |}{res}        12          5 {txt}{c |}{res}        17 
+{txt}         3 {c |}{res}         1          1 {txt}{c |}{res}         2 
+{txt}         4 {c |}{res}        20         17 {txt}{c |}{res}        37 
+{txt}         6 {c |}{res}         1          2 {txt}{c |}{res}         3 
+{txt}         7 {c |}{res}         7          0 {txt}{c |}{res}         7 
+{txt}         8 {c |}{res}         0          2 {txt}{c |}{res}         2 
+{txt}         9 {c |}{res}         6          8 {txt}{c |}{res}        14 
+{txt}        10 {c |}{res}         3          5 {txt}{c |}{res}         8 
+{txt}        11 {c |}{res}         3          4 {txt}{c |}{res}         7 
+{txt}        12 {c |}{res}         1          0 {txt}{c |}{res}         1 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        62         47 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 4
+
+           {c |}      drug_basic 
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        30         24 {txt}{c |}{res}        54 
+{txt}         2 {c |}{res}        14          1 {txt}{c |}{res}        15 
+{txt}         3 {c |}{res}         9          4 {txt}{c |}{res}        13 
+{txt}         4 {c |}{res}        28          9 {txt}{c |}{res}        37 
+{txt}         6 {c |}{res}         7          4 {txt}{c |}{res}        11 
+{txt}         7 {c |}{res}        15          4 {txt}{c |}{res}        19 
+{txt}         8 {c |}{res}        10          7 {txt}{c |}{res}        17 
+{txt}         9 {c |}{res}        10          6 {txt}{c |}{res}        16 
+{txt}        10 {c |}{res}         9         10 {txt}{c |}{res}        19 
+{txt}        11 {c |}{res}        14          7 {txt}{c |}{res}        21 
+{txt}        12 {c |}{res}         8          3 {txt}{c |}{res}        11 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       154         79 {txt}{c |}{res}       233 
+
+{txt}{hline}
+-> diagnosis = 5
+
+           {c |}      drug_basic 
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         1          1 {txt}{c |}{res}         2 
+{txt}         3 {c |}{res}         4          0 {txt}{c |}{res}         4 
+{txt}         6 {c |}{res}         9          4 {txt}{c |}{res}        13 
+{txt}         7 {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}         8 {c |}{res}         2          2 {txt}{c |}{res}         4 
+{txt}         9 {c |}{res}         9          4 {txt}{c |}{res}        13 
+{txt}        10 {c |}{res}         7          5 {txt}{c |}{res}        12 
+{txt}        11 {c |}{res}        26         13 {txt}{c |}{res}        39 
+{txt}        12 {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        64         33 {txt}{c |}{res}        97 
+
+{txt}{hline}
+-> diagnosis = 9
+
+           {c |}      drug_basic 
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         9 {c |}{res}        12          4 {txt}{c |}{res}        16 
+{txt}        11 {c |}{res}         4          3 {txt}{c |}{res}         7 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        16          7 {txt}{c |}{res}        23 
+
+{txt}
+{com}. bysort diagnosis: tab institution_type drug_basic
+
+{txt}{hline}
+-> diagnosis = 1
+
+institutio {c |}      drug_basic 
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        46         28 {txt}{c |}{res}        74 
+{txt}         2 {c |}{res}         3          4 {txt}{c |}{res}         7 
+{txt}         3 {c |}{res}         6         13 {txt}{c |}{res}        19 
+{txt}         4 {c |}{res}        20         36 {txt}{c |}{res}        56 
+{txt}         5 {c |}{res}        35         34 {txt}{c |}{res}        69 
+{txt}         6 {c |}{res}        13          1 {txt}{c |}{res}        14 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       123        116 {txt}{c |}{res}       239 
+
+{txt}{hline}
+-> diagnosis = 2
+
+institutio {c |}      drug_basic 
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        56         41 {txt}{c |}{res}        97 
+{txt}         2 {c |}{res}         2          4 {txt}{c |}{res}         6 
+{txt}         3 {c |}{res}         6          8 {txt}{c |}{res}        14 
+{txt}         4 {c |}{res}        28         34 {txt}{c |}{res}        62 
+{txt}         5 {c |}{res}        50         29 {txt}{c |}{res}        79 
+{txt}         6 {c |}{res}        24          5 {txt}{c |}{res}        29 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       166        121 {txt}{c |}{res}       287 
+
+{txt}{hline}
+-> diagnosis = 3
+
+institutio {c |}      drug_basic 
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        26          6 {txt}{c |}{res}        32 
+{txt}         2 {c |}{res}         0          2 {txt}{c |}{res}         2 
+{txt}         3 {c |}{res}         1          5 {txt}{c |}{res}         6 
+{txt}         4 {c |}{res}         9         20 {txt}{c |}{res}        29 
+{txt}         5 {c |}{res}        18         12 {txt}{c |}{res}        30 
+{txt}         6 {c |}{res}         8          2 {txt}{c |}{res}        10 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        62         47 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 4
+
+institutio {c |}      drug_basic 
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        80         23 {txt}{c |}{res}       103 
+{txt}         2 {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}         3 {c |}{res}         8          3 {txt}{c |}{res}        11 
+{txt}         4 {c |}{res}        19         24 {txt}{c |}{res}        43 
+{txt}         5 {c |}{res}        15         19 {txt}{c |}{res}        34 
+{txt}         6 {c |}{res}        29          8 {txt}{c |}{res}        37 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       154         79 {txt}{c |}{res}       233 
+
+{txt}{hline}
+-> diagnosis = 5
+
+institutio {c |}      drug_basic 
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        40          9 {txt}{c |}{res}        49 
+{txt}         2 {c |}{res}         1          1 {txt}{c |}{res}         2 
+{txt}         3 {c |}{res}         6          5 {txt}{c |}{res}        11 
+{txt}         4 {c |}{res}         5          9 {txt}{c |}{res}        14 
+{txt}         5 {c |}{res}         7          9 {txt}{c |}{res}        16 
+{txt}         6 {c |}{res}         5          0 {txt}{c |}{res}         5 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        64         33 {txt}{c |}{res}        97 
+
+{txt}{hline}
+-> diagnosis = 9
+
+institutio {c |}      drug_basic 
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         7          2 {txt}{c |}{res}         9 
+{txt}         3 {c |}{res}         1          1 {txt}{c |}{res}         2 
+{txt}         4 {c |}{res}         1          0 {txt}{c |}{res}         1 
+{txt}         5 {c |}{res}         1          2 {txt}{c |}{res}         3 
+{txt}         6 {c |}{res}         6          2 {txt}{c |}{res}         8 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        16          7 {txt}{c |}{res}        23 
+
+{txt}
+{com}. bysort diagnosis: tab management_type drug_basic
+
+{txt}{hline}
+-> diagnosis = 1
+
+management {c |}      drug_basic 
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       100        101 {txt}{c |}{res}       201 
+{txt}         2 {c |}{res}        23         15 {txt}{c |}{res}        38 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       123        116 {txt}{c |}{res}       239 
+
+{txt}{hline}
+-> diagnosis = 2
+
+management {c |}      drug_basic 
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       132        105 {txt}{c |}{res}       237 
+{txt}         2 {c |}{res}        34         16 {txt}{c |}{res}        50 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       166        121 {txt}{c |}{res}       287 
+
+{txt}{hline}
+-> diagnosis = 3
+
+management {c |}      drug_basic 
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        50         42 {txt}{c |}{res}        92 
+{txt}         2 {c |}{res}        12          5 {txt}{c |}{res}        17 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        62         47 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 4
+
+management {c |}      drug_basic 
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}       122         66 {txt}{c |}{res}       188 
+{txt}         2 {c |}{res}        32         13 {txt}{c |}{res}        45 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}       154         79 {txt}{c |}{res}       233 
+
+{txt}{hline}
+-> diagnosis = 5
+
+management {c |}      drug_basic 
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        55         31 {txt}{c |}{res}        86 
+{txt}         2 {c |}{res}         9          2 {txt}{c |}{res}        11 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        64         33 {txt}{c |}{res}        97 
+
+{txt}{hline}
+-> diagnosis = 9
+
+management {c |}      drug_basic 
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         8          4 {txt}{c |}{res}        12 
+{txt}         2 {c |}{res}         8          3 {txt}{c |}{res}        11 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        16          7 {txt}{c |}{res}        23 
+
+{txt}
+{com}. 
+. bysort diagnosis: tab province drug_insurance
+
+{txt}{hline}
+-> diagnosis = 1
+
+           {c |}    drug_insurance
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         3          5 {txt}{c |}{res}         8 
+{txt} guangdong {c |}{res}         8         43 {txt}{c |}{res}        51 
+{txt}   guizhou {c |}{res}         3         12 {txt}{c |}{res}        15 
+{txt}     hunan {c |}{res}        19         33 {txt}{c |}{res}        52 
+{txt}   neimeng {c |}{res}         1         12 {txt}{c |}{res}        13 
+{txt}    shanxi {c |}{res}         7         19 {txt}{c |}{res}        26 
+{txt}   sichuan {c |}{res}        14         60 {txt}{c |}{res}        74 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        55        184 {txt}{c |}{res}       239 
+
+{txt}{hline}
+-> diagnosis = 2
+
+           {c |}    drug_insurance
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         5         14 {txt}{c |}{res}        19 
+{txt} guangdong {c |}{res}        21         48 {txt}{c |}{res}        69 
+{txt}   guizhou {c |}{res}         7         24 {txt}{c |}{res}        31 
+{txt}     hunan {c |}{res}        24         35 {txt}{c |}{res}        59 
+{txt}   neimeng {c |}{res}         8         15 {txt}{c |}{res}        23 
+{txt}    shanxi {c |}{res}         8         17 {txt}{c |}{res}        25 
+{txt}   sichuan {c |}{res}        17         44 {txt}{c |}{res}        61 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        90        197 {txt}{c |}{res}       287 
+
+{txt}{hline}
+-> diagnosis = 3
+
+           {c |}    drug_insurance
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         4          6 {txt}{c |}{res}        10 
+{txt} guangdong {c |}{res}         8         10 {txt}{c |}{res}        18 
+{txt}   guizhou {c |}{res}         1          6 {txt}{c |}{res}         7 
+{txt}     hunan {c |}{res}        11         16 {txt}{c |}{res}        27 
+{txt}   neimeng {c |}{res}         2          3 {txt}{c |}{res}         5 
+{txt}    shanxi {c |}{res}         1         10 {txt}{c |}{res}        11 
+{txt}   sichuan {c |}{res}         9         22 {txt}{c |}{res}        31 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        36         73 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 4
+
+           {c |}    drug_insurance
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         6         12 {txt}{c |}{res}        18 
+{txt} guangdong {c |}{res}        15         18 {txt}{c |}{res}        33 
+{txt}   guizhou {c |}{res}         6         13 {txt}{c |}{res}        19 
+{txt}     hunan {c |}{res}        19         28 {txt}{c |}{res}        47 
+{txt}   neimeng {c |}{res}        10          3 {txt}{c |}{res}        13 
+{txt}    shanxi {c |}{res}         9         22 {txt}{c |}{res}        31 
+{txt}   sichuan {c |}{res}        27         45 {txt}{c |}{res}        72 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        92        141 {txt}{c |}{res}       233 
+
+{txt}{hline}
+-> diagnosis = 5
+
+           {c |}    drug_insurance
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt} guangdong {c |}{res}         5         14 {txt}{c |}{res}        19 
+{txt}   guizhou {c |}{res}         2          4 {txt}{c |}{res}         6 
+{txt}     hunan {c |}{res}        10          7 {txt}{c |}{res}        17 
+{txt}   neimeng {c |}{res}         2          5 {txt}{c |}{res}         7 
+{txt}    shanxi {c |}{res}         4          6 {txt}{c |}{res}        10 
+{txt}   sichuan {c |}{res}        14         23 {txt}{c |}{res}        37 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        37         60 {txt}{c |}{res}        97 
+
+{txt}{hline}
+-> diagnosis = 9
+
+           {c |}    drug_insurance
+  province {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+     gansu {c |}{res}         0          2 {txt}{c |}{res}         2 
+{txt} guangdong {c |}{res}         0          4 {txt}{c |}{res}         4 
+{txt}     hunan {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt}   neimeng {c |}{res}         3          0 {txt}{c |}{res}         3 
+{txt}    shanxi {c |}{res}         3          6 {txt}{c |}{res}         9 
+{txt}   sichuan {c |}{res}         3          1 {txt}{c |}{res}         4 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}         9         14 {txt}{c |}{res}        23 
+
+{txt}
+{com}. bysort diagnosis: tab case drug_insurance
+
+{txt}{hline}
+-> diagnosis = 1
+
+           {c |}    drug_insurance
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         4          7 {txt}{c |}{res}        11 
+{txt}         2 {c |}{res}         5         10 {txt}{c |}{res}        15 
+{txt}         3 {c |}{res}         2          2 {txt}{c |}{res}         4 
+{txt}         4 {c |}{res}         5         35 {txt}{c |}{res}        40 
+{txt}         6 {c |}{res}        12         35 {txt}{c |}{res}        47 
+{txt}         7 {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt}         8 {c |}{res}         0         22 {txt}{c |}{res}        22 
+{txt}         9 {c |}{res}        18         48 {txt}{c |}{res}        66 
+{txt}        10 {c |}{res}         2          6 {txt}{c |}{res}         8 
+{txt}        11 {c |}{res}         7         18 {txt}{c |}{res}        25 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        55        184 {txt}{c |}{res}       239 
+
+{txt}{hline}
+-> diagnosis = 2
+
+           {c |}    drug_insurance
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         2         16 {txt}{c |}{res}        18 
+{txt}         2 {c |}{res}         5          5 {txt}{c |}{res}        10 
+{txt}         3 {c |}{res}         2          3 {txt}{c |}{res}         5 
+{txt}         4 {c |}{res}        32         56 {txt}{c |}{res}        88 
+{txt}         6 {c |}{res}        16         39 {txt}{c |}{res}        55 
+{txt}         7 {c |}{res}        11         19 {txt}{c |}{res}        30 
+{txt}         8 {c |}{res}         5         22 {txt}{c |}{res}        27 
+{txt}         9 {c |}{res}         2          4 {txt}{c |}{res}         6 
+{txt}        10 {c |}{res}         5         13 {txt}{c |}{res}        18 
+{txt}        11 {c |}{res}         3         13 {txt}{c |}{res}        16 
+{txt}        12 {c |}{res}         7          7 {txt}{c |}{res}        14 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        90        197 {txt}{c |}{res}       287 
+
+{txt}{hline}
+-> diagnosis = 3
+
+           {c |}    drug_insurance
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         3          8 {txt}{c |}{res}        11 
+{txt}         2 {c |}{res}         7         10 {txt}{c |}{res}        17 
+{txt}         3 {c |}{res}         0          2 {txt}{c |}{res}         2 
+{txt}         4 {c |}{res}        14         23 {txt}{c |}{res}        37 
+{txt}         6 {c |}{res}         0          3 {txt}{c |}{res}         3 
+{txt}         7 {c |}{res}         6          1 {txt}{c |}{res}         7 
+{txt}         8 {c |}{res}         0          2 {txt}{c |}{res}         2 
+{txt}         9 {c |}{res}         3         11 {txt}{c |}{res}        14 
+{txt}        10 {c |}{res}         2          6 {txt}{c |}{res}         8 
+{txt}        11 {c |}{res}         1          6 {txt}{c |}{res}         7 
+{txt}        12 {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        36         73 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 4
+
+           {c |}    drug_insurance
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        15         39 {txt}{c |}{res}        54 
+{txt}         2 {c |}{res}         7          8 {txt}{c |}{res}        15 
+{txt}         3 {c |}{res}         7          6 {txt}{c |}{res}        13 
+{txt}         4 {c |}{res}        23         14 {txt}{c |}{res}        37 
+{txt}         6 {c |}{res}         4          7 {txt}{c |}{res}        11 
+{txt}         7 {c |}{res}        12          7 {txt}{c |}{res}        19 
+{txt}         8 {c |}{res}         5         12 {txt}{c |}{res}        17 
+{txt}         9 {c |}{res}         3         13 {txt}{c |}{res}        16 
+{txt}        10 {c |}{res}         6         13 {txt}{c |}{res}        19 
+{txt}        11 {c |}{res}         4         17 {txt}{c |}{res}        21 
+{txt}        12 {c |}{res}         6          5 {txt}{c |}{res}        11 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        92        141 {txt}{c |}{res}       233 
+
+{txt}{hline}
+-> diagnosis = 5
+
+           {c |}    drug_insurance
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         1          1 {txt}{c |}{res}         2 
+{txt}         3 {c |}{res}         3          1 {txt}{c |}{res}         4 
+{txt}         6 {c |}{res}         6          7 {txt}{c |}{res}        13 
+{txt}         7 {c |}{res}         2          3 {txt}{c |}{res}         5 
+{txt}         8 {c |}{res}         0          4 {txt}{c |}{res}         4 
+{txt}         9 {c |}{res}         4          9 {txt}{c |}{res}        13 
+{txt}        10 {c |}{res}         5          7 {txt}{c |}{res}        12 
+{txt}        11 {c |}{res}        15         24 {txt}{c |}{res}        39 
+{txt}        12 {c |}{res}         1          4 {txt}{c |}{res}         5 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        37         60 {txt}{c |}{res}        97 
+
+{txt}{hline}
+-> diagnosis = 9
+
+           {c |}    drug_insurance
+      case {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         9 {c |}{res}         5         11 {txt}{c |}{res}        16 
+{txt}        11 {c |}{res}         4          3 {txt}{c |}{res}         7 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}         9         14 {txt}{c |}{res}        23 
+
+{txt}
+{com}. bysort diagnosis: tab institution_type drug_insurance
+
+{txt}{hline}
+-> diagnosis = 1
+
+institutio {c |}    drug_insurance
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        22         52 {txt}{c |}{res}        74 
+{txt}         2 {c |}{res}         1          6 {txt}{c |}{res}         7 
+{txt}         3 {c |}{res}         0         19 {txt}{c |}{res}        19 
+{txt}         4 {c |}{res}        10         46 {txt}{c |}{res}        56 
+{txt}         5 {c |}{res}        13         56 {txt}{c |}{res}        69 
+{txt}         6 {c |}{res}         9          5 {txt}{c |}{res}        14 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        55        184 {txt}{c |}{res}       239 
+
+{txt}{hline}
+-> diagnosis = 2
+
+institutio {c |}    drug_insurance
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        40         57 {txt}{c |}{res}        97 
+{txt}         2 {c |}{res}         2          4 {txt}{c |}{res}         6 
+{txt}         3 {c |}{res}         4         10 {txt}{c |}{res}        14 
+{txt}         4 {c |}{res}        11         51 {txt}{c |}{res}        62 
+{txt}         5 {c |}{res}        17         62 {txt}{c |}{res}        79 
+{txt}         6 {c |}{res}        16         13 {txt}{c |}{res}        29 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        90        197 {txt}{c |}{res}       287 
+
+{txt}{hline}
+-> diagnosis = 3
+
+institutio {c |}    drug_insurance
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        18         14 {txt}{c |}{res}        32 
+{txt}         2 {c |}{res}         0          2 {txt}{c |}{res}         2 
+{txt}         3 {c |}{res}         1          5 {txt}{c |}{res}         6 
+{txt}         4 {c |}{res}         2         27 {txt}{c |}{res}        29 
+{txt}         5 {c |}{res}        10         20 {txt}{c |}{res}        30 
+{txt}         6 {c |}{res}         5          5 {txt}{c |}{res}        10 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        36         73 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 4
+
+institutio {c |}    drug_insurance
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        45         58 {txt}{c |}{res}       103 
+{txt}         2 {c |}{res}         2          3 {txt}{c |}{res}         5 
+{txt}         3 {c |}{res}         4          7 {txt}{c |}{res}        11 
+{txt}         4 {c |}{res}         7         36 {txt}{c |}{res}        43 
+{txt}         5 {c |}{res}         9         25 {txt}{c |}{res}        34 
+{txt}         6 {c |}{res}        25         12 {txt}{c |}{res}        37 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        92        141 {txt}{c |}{res}       233 
+
+{txt}{hline}
+-> diagnosis = 5
+
+institutio {c |}    drug_insurance
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        24         25 {txt}{c |}{res}        49 
+{txt}         2 {c |}{res}         1          1 {txt}{c |}{res}         2 
+{txt}         3 {c |}{res}         2          9 {txt}{c |}{res}        11 
+{txt}         4 {c |}{res}         3         11 {txt}{c |}{res}        14 
+{txt}         5 {c |}{res}         3         13 {txt}{c |}{res}        16 
+{txt}         6 {c |}{res}         4          1 {txt}{c |}{res}         5 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        37         60 {txt}{c |}{res}        97 
+
+{txt}{hline}
+-> diagnosis = 9
+
+institutio {c |}    drug_insurance
+    n_type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         5          4 {txt}{c |}{res}         9 
+{txt}         3 {c |}{res}         0          2 {txt}{c |}{res}         2 
+{txt}         4 {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt}         5 {c |}{res}         1          2 {txt}{c |}{res}         3 
+{txt}         6 {c |}{res}         3          5 {txt}{c |}{res}         8 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}         9         14 {txt}{c |}{res}        23 
+
+{txt}
+{com}. bysort diagnosis: tab management_type drug_insurance
+
+{txt}{hline}
+-> diagnosis = 1
+
+management {c |}    drug_insurance
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        44        157 {txt}{c |}{res}       201 
+{txt}         2 {c |}{res}        11         27 {txt}{c |}{res}        38 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        55        184 {txt}{c |}{res}       239 
+
+{txt}{hline}
+-> diagnosis = 2
+
+management {c |}    drug_insurance
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        67        170 {txt}{c |}{res}       237 
+{txt}         2 {c |}{res}        23         27 {txt}{c |}{res}        50 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        90        197 {txt}{c |}{res}       287 
+
+{txt}{hline}
+-> diagnosis = 3
+
+management {c |}    drug_insurance
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        30         62 {txt}{c |}{res}        92 
+{txt}         2 {c |}{res}         6         11 {txt}{c |}{res}        17 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        36         73 {txt}{c |}{res}       109 
+
+{txt}{hline}
+-> diagnosis = 4
+
+management {c |}    drug_insurance
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        66        122 {txt}{c |}{res}       188 
+{txt}         2 {c |}{res}        26         19 {txt}{c |}{res}        45 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        92        141 {txt}{c |}{res}       233 
+
+{txt}{hline}
+-> diagnosis = 5
+
+management {c |}    drug_insurance
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}        29         57 {txt}{c |}{res}        86 
+{txt}         2 {c |}{res}         8          3 {txt}{c |}{res}        11 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        37         60 {txt}{c |}{res}        97 
+
+{txt}{hline}
+-> diagnosis = 9
+
+management {c |}    drug_insurance
+     _type {c |}         0          1 {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         1 {c |}{res}         4          8 {txt}{c |}{res}        12 
+{txt}         2 {c |}{res}         5          6 {txt}{c |}{res}        11 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}         9         14 {txt}{c |}{res}        23 
+
+{txt}
+{com}. 
+. 
+. 
+{txt}end of do-file
+
+{com}. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}/Users/chenzhifei/Documents/Grad23Summer/USP/Logfiles/8.18.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}18 Sep 2023, 22:38:05
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
